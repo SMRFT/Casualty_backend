@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Patient
+from .models import ERPatient
 from bson import ObjectId
 # Custom field to handle ObjectId
 class ObjectIdField(serializers.Field):
@@ -7,22 +7,23 @@ class ObjectIdField(serializers.Field):
         return str(value)
     def to_internal_value(self, data):
         return str(data)
+    #ER form
 class PatientSerializer(serializers.ModelSerializer):
     id = ObjectIdField(read_only=True)  # :point_left: Add this line to use custom field
     class Meta:
-        model = Patient
+        model = ERPatient
         fields = '__all__'
 
 
 # serializers.py
 
 from rest_framework import serializers
-from .models import PatientRegister
+from .models import ERPatientRegister
 
 class PatientRegisterSerializer(serializers.ModelSerializer):
     id = ObjectIdField(read_only=True)
     class Meta:
-        model = PatientRegister
+        model = ERPatientRegister
         fields = '__all__'
 
 
@@ -36,3 +37,5 @@ class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = '__all__'
+
+

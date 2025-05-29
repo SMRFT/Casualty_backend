@@ -11,4 +11,8 @@ urlpatterns = [
      path('dashboard/', views.get_patients_by_date),
     path("procedures/", views.get_procedure_list, name="procedure-list"),
      path("doctors/", views.get_doctor_list, name="doctor-list"),
+     path('patient-by-er/', views.get_patient_by_er_number, name='patient-by-er'),
+     path('patients-by-date/', views.get_patients_by_date, name='patients-by-date'),
+    path('printbill/', views.fetch_er_patient_bills, name='fetch_er_patient_bills'),
+
 ]

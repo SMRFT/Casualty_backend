@@ -23,19 +23,24 @@ class AuditModel(models.Model):
         self.lastmodified_by = self.lastmodified_by or "system"
         super().save(*args, **kwargs)
 
-class Patient(AuditModel):
+
+#ER form
+class ERPatient(AuditModel):
     
     name = models.CharField(max_length=200,blank=True)
-    erNumber = models.CharField(max_length=100,blank=True)
     billNumber = models.CharField(max_length=100)
     doctorName = models.CharField(max_length=200,blank=True)
     billDate = models.DateField()
-    opNumber = models.CharField(max_length=100,blank=True)
-    billType = models.CharField(max_length=150,blank=True)
+    billType = models.JSONField(blank=True, null=True)  
     age =  models.CharField(max_length=100,blank=True)
     gender = models.CharField(max_length=10,blank=True)
     dob =  models.CharField(max_length=100,blank=True)
+    area = models.CharField(max_length=100, blank=True, null=True)
+    pincode = models.CharField(max_length=20, blank=True, null=True)
+    city = models.CharField(max_length=100, blank=True, null=True)
+    state = models.CharField(max_length=100, blank=True, null=True)
     address =  models.CharField(max_length=100,blank=True)
+    mobilePhone = models.CharField(max_length=20,blank=True)
     totalAmount=  models.CharField(max_length=100,blank=True)
     discount=  models.CharField(max_length=100,blank=True)
     discountedAmount=  models.CharField(max_length=100,blank=True)
@@ -48,22 +53,23 @@ class Patient(AuditModel):
 
 from django.db import models
 
-class PatientRegister(AuditModel):
-    
+class ERPatientRegister(AuditModel):
+    erNumber = models.CharField(max_length=100,blank=True)
     name = models.CharField(max_length=255)
     dob =  models.CharField(max_length=100,blank=True)
     age =models.CharField(max_length=100,blank=True)
-    gender = models.CharField(max_length=10)
+    gender = models.CharField(max_length=10,blank=True)
     permanentAddress = models.TextField(blank=True, null=True)
     area = models.CharField(max_length=100, blank=True, null=True)
-    zipcode = models.CharField(max_length=20, blank=True, null=True)
+    pincode = models.CharField(max_length=20, blank=True, null=True)
     city = models.CharField(max_length=100, blank=True, null=True)
     state = models.CharField(max_length=100, blank=True, null=True)
+    aadhaarNumber= models.CharField(max_length=100,blank=True)
     email = models.EmailField(blank=True, null=True)
-    mobilePhone = models.CharField(max_length=20)
+    mobilePhone = models.CharField(max_length=20,blank=True)
     homePhone = models.CharField(max_length=20, blank=True, null=True)
     bloodGroup = models.CharField(max_length=5, blank=True, null=True)
-    spouseName = models.CharField(max_length=255, blank=True, null=True)
+    guardianName = models.CharField(max_length=255, blank=True, null=True)
     referredBy = models.CharField(max_length=255, blank=True, null=True)
     doctorName = models.CharField(max_length=255, blank=True, null=True)
 

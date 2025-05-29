@@ -8,10 +8,10 @@ from pymongo import MongoClient
 # db = client["your_database_name"]  # Replace with your actual DB name
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from .models import Patient
+from .models import ERPatient
 from .serializers import PatientSerializer
 from datetime import datetime
-
+#ER form 
 @api_view(['POST'])
 def create_patient(request):
     # Generate current and previous year in 2-digit format
@@ -20,7 +20,7 @@ def create_patient(request):
     prefix = f"{current_year:02d}{next_year:02d}"  # e.g. "2526"
 
     # Count how many patients already exist with this year's prefix
-    existing_count = Patient.objects.filter(billNumber__startswith=prefix).count()
+    existing_count = ERPatient.objects.filter(billNumber__startswith=prefix).count()
     next_number = existing_count + 1
     bill_number = f"{prefix}/{next_number:02d}"  # e.g. "2526/01", "2526/02"
 
@@ -84,7 +84,7 @@ def get_next_bill_number(request):
 
     # Get latest billNumber with this prefix
     latest_patient = (
-        Patient.objects.filter(billNumber__startswith=prefix)
+        ERPatient.objects.filter(billNumber__startswith=prefix)
         .order_by('-billNumber')
         .first()
     )
@@ -108,7 +108,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.utils.dateparse import parse_date
 from datetime import datetime, timedelta
-from .models import Patient
+from .models import ERPatient
 from .serializers import PatientSerializer
 
 @api_view(['GET'])
@@ -122,22 +122,18 @@ def get_patients_by_date(request):
         if not bill_date:
             return Response({"error": "Invalid billDate format"}, status=400)
 
-        # Start and end of the day
-        start_datetime = datetime.combine(bill_date, datetime.min.time())
-        end_datetime = datetime.combine(bill_date, datetime.max.time())
-
-        # Range filter (for MongoDB compatibility)
-        patients = Patient.objects.filter(billDate__gte=start_datetime, billDate__lte=end_datetime)
+        patients = ERPatient.objects.filter(billDate=bill_date)
         serializer = PatientSerializer(patients, many=True)
         return Response(serializer.data)
     except Exception as e:
         return Response({"error": str(e)}, status=500)
+
     
 
 
 
 from datetime import date
-from .models import Patient
+from .models import ERPatient
 
 def get_next_er_number():
     today = date.today()
@@ -150,10 +146,10 @@ def get_next_er_number():
         start_year = year
 
     # Use last 2 digits of the year
-    prefix = f"S0{str(start_year)[-2:]}"
+    prefix = f"ER0{str(start_year)[-2:]}"
 
     # Filter by current financial year's prefix
-    existing_ers = Patient.objects.filter(erNumber__startswith=prefix).order_by('-erNumber')
+    existing_ers = ERPatientRegister.objects.filter(erNumber__startswith=prefix).order_by('-erNumber')
 
     if existing_ers.exists():
         last_number = int(existing_ers[0].erNumber.split("/")[-1])
@@ -171,15 +167,14 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.decorators import api_view, parser_classes
 from rest_framework.response import Response
 from rest_framework import status
-from .models import PatientRegister
+from .models import ERPatientRegister
 from .serializers import PatientRegisterSerializer
 
 @csrf_exempt
 @api_view(['POST'])
 def register_patient(request):
     data = request.data.copy()
-    data['erNumber'] = get_next_er_number()
-
+   
     serializer = PatientRegisterSerializer(data=data)
     if serializer.is_valid():
         serializer.save()
@@ -245,3 +240,47 @@ def login_employee(request):
     except Employee.DoesNotExist:
         return Response({'message': 'Employee not found'}, status=status.HTTP_404_NOT_FOUND)
 
+
+# views.py
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from .models import ERPatientRegister
+from .serializers import PatientRegisterSerializer
+
+@api_view(['GET'])
+def get_patient_by_er_number(request):
+    er_number = request.query_params.get('erNumber')
+    if not er_number:
+        return Response({"error": "erNumber is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        patient = ERPatientRegister.objects.get(erNumber=er_number)
+        serializer = PatientRegisterSerializer(patient)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    except ERPatientRegister.DoesNotExist:
+        return Response({"error": "Patient not found"}, status=status.HTTP_404_NOT_FOUND)
+
+
+#printbill
+
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import ERPatient
+from .serializers import PatientSerializer
+from datetime import datetime
+
+@api_view(['GET'])
+def fetch_er_patient_bills(request):
+    selected_date = request.GET.get('date')
+    try:
+        if selected_date:
+            selected_date = datetime.strptime(selected_date, '%Y-%m-%d').date()
+        else:
+            selected_date = datetime.today().date()
+
+        patients = ERPatient.objects.filter(billDate=selected_date)
+        serializer = PatientSerializer(patients, many=True)
+        return Response(serializer.data)
+    except Exception as e:
+        return Response({"error": str(e)}, status=400)
