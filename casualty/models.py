@@ -26,7 +26,6 @@ class AuditModel(models.Model):
 
 #ER form
 class ERPatient(AuditModel):
-    
     name = models.CharField(max_length=200,blank=True)
     billNumber = models.CharField(max_length=100)
     doctorName = models.CharField(max_length=200,blank=True)
@@ -78,7 +77,7 @@ class ERPatientRegister(AuditModel):
 # models.py
 from django.db import models
 
-class Employee(models.Model):
+class Employee(AuditModel):
     empid = models.CharField(max_length=50, primary_key=True)
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=50)
