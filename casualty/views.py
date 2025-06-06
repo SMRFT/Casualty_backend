@@ -11,8 +11,13 @@ from rest_framework.response import Response
 from .models import ERPatient
 from .serializers import PatientSerializer
 from datetime import datetime
+from rest_framework.decorators import api_view , permission_classes
+from pyauth.auth import HasRolePermission
+
+
 #ER form 
 @api_view(['POST'])
+@permission_classes([HasRolePermission])
 def create_patient(request):
     # Generate current and previous year in 2-digit format
     current_year = datetime.now().year % 100      # e.g. 2025 -> 25
@@ -46,7 +51,7 @@ from bson.json_util import dumps
 load_dotenv()
 
 def get_procedure_list(request):
-    mongo_url = os.getenv("MONGO_URL")
+    mongo_url = os.getenv("GLOBAL_DB_HOST")
     client = MongoClient(mongo_url)
     db = client["Casuality"]
     collection = db["casualty_procedurelist"]
@@ -65,7 +70,7 @@ from bson.json_util import dumps
 load_dotenv()
 
 def get_doctor_list(request):
-    mongo_url = os.getenv("MONGO_URL")
+    mongo_url = os.getenv("GLOBAL_DB_HOST")
     client = MongoClient(mongo_url)
     db = client["Casuality"]
     collection = db["casualty_casualty_doctors"]
@@ -77,6 +82,7 @@ def get_doctor_list(request):
 
 
 @api_view(['GET'])
+@permission_classes([HasRolePermission])
 def get_next_bill_number(request):
     current_year = datetime.now().year % 100
     next_year = (datetime.now().year + 1) % 100
@@ -112,6 +118,7 @@ from .models import ERPatient
 from .serializers import PatientSerializer
 
 @api_view(['GET'])
+@permission_classes([HasRolePermission])
 def get_patients_by_date(request):
     bill_date_str = request.GET.get('billDate')
     if not bill_date_str:
@@ -172,6 +179,7 @@ from .serializers import PatientRegisterSerializer
 
 @csrf_exempt
 @api_view(['POST'])
+@permission_classes([HasRolePermission])
 def register_patient(request):
     data = request.data.copy()
    
@@ -201,6 +209,7 @@ from .models import Employee
 from .serializers import EmployeeSerializer
 
 @api_view(['POST'])
+@permission_classes([HasRolePermission])
 def register_employee(request):
     data = request.data.copy()
     data['password'] = make_password(data.get('password'))  # hash password
@@ -221,6 +230,7 @@ from django.contrib.auth.hashers import check_password
 from .models import Employee
 
 @api_view(['POST'])
+@permission_classes([HasRolePermission])
 def login_employee(request):
     empid = request.data.get('empid')
     password = request.data.get('password')
@@ -249,6 +259,7 @@ from .models import ERPatientRegister
 from .serializers import PatientRegisterSerializer
 
 @api_view(['GET'])
+@permission_classes([HasRolePermission])
 def get_patient_by_er_number(request):
     er_number = request.query_params.get('erNumber')
     if not er_number:
@@ -271,6 +282,7 @@ from .serializers import PatientSerializer
 from datetime import datetime
 
 @api_view(['GET'])
+@permission_classes([HasRolePermission])
 def fetch_er_patient_bills(request):
     selected_date = request.GET.get('date')
     try:
