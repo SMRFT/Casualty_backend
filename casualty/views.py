@@ -1,20 +1,32 @@
-from django.shortcuts import render
 
-# Create your views here.
-from django.conf import settings
-from pymongo import MongoClient
-
-# client = MongoClient(settings.MONGO_URL)
-# db = client["your_database_name"]  # Replace with your actual DB name
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from .models import ERPatient
 from .serializers import PatientSerializer
 from datetime import datetime
 from rest_framework.decorators import api_view , permission_classes
 from pyauth.auth import HasRolePermission
+from django.contrib.auth.hashers import make_password
+from .models import Employee
+from .serializers import EmployeeSerializer
+from pymongo import MongoClient
+from django.http import JsonResponse
+import os
+from dotenv import load_dotenv
+from bson.json_util import dumps
+from rest_framework.response import Response
+from django.utils.dateparse import parse_date
+from .models import ERPatient
+from .serializers import PatientSerializer
+from .models import ERPatientRegister
+from django.contrib.auth.hashers import check_password
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework import status
+from .serializers import PatientRegisterSerializer
+from datetime import date
 
 
+
+load_dotenv()
 #ER form 
 @api_view(['POST'])
 @permission_classes([HasRolePermission])
@@ -42,14 +54,8 @@ def create_patient(request):
 
 
 # views.py
-from pymongo import MongoClient
-from django.http import JsonResponse
-import os
-from dotenv import load_dotenv
-from bson.json_util import dumps
-
-load_dotenv()
-
+@api_view(['GET'])
+@permission_classes([HasRolePermission])
 def get_procedure_list(request):
     mongo_url = os.getenv("GLOBAL_DB_HOST")
     client = MongoClient(mongo_url)
@@ -61,14 +67,10 @@ def get_procedure_list(request):
 
 
 
-from pymongo import MongoClient
-from django.http import JsonResponse
-import os
-from dotenv import load_dotenv
-from bson.json_util import dumps
 
 load_dotenv()
-
+@api_view(['GET'])
+@permission_classes([HasRolePermission])
 def get_doctor_list(request):
     mongo_url = os.getenv("GLOBAL_DB_HOST")
     client = MongoClient(mongo_url)
@@ -110,12 +112,7 @@ def get_next_bill_number(request):
 
 
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from django.utils.dateparse import parse_date
-from datetime import datetime, timedelta
-from .models import ERPatient
-from .serializers import PatientSerializer
+
 
 @api_view(['GET'])
 @permission_classes([HasRolePermission])
@@ -139,8 +136,7 @@ def get_patients_by_date(request):
 
 
 
-from datetime import date
-from .models import ERPatient
+
 
 def get_next_er_number():
     today = date.today()
@@ -169,13 +165,6 @@ def get_next_er_number():
 
     # views.py
 
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.decorators import api_view, parser_classes
-from rest_framework.response import Response
-from rest_framework import status
-from .models import ERPatientRegister
-from .serializers import PatientRegisterSerializer
 
 @csrf_exempt
 @api_view(['POST'])
@@ -200,13 +189,7 @@ def next_er_number(request):
 
 
 
-# views.py
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth.hashers import make_password
-from .models import Employee
-from .serializers import EmployeeSerializer
+
 
 @api_view(['POST'])
 @permission_classes([HasRolePermission])
@@ -223,11 +206,6 @@ def register_employee(request):
 
 
 # views.py
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib.auth.hashers import check_password
-from .models import Employee
 
 @api_view(['POST'])
 @permission_classes([HasRolePermission])
@@ -252,11 +230,6 @@ def login_employee(request):
 
 
 # views.py
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from rest_framework import status
-from .models import ERPatientRegister
-from .serializers import PatientRegisterSerializer
 
 @api_view(['GET'])
 @permission_classes([HasRolePermission])
@@ -275,11 +248,6 @@ def get_patient_by_er_number(request):
 
 #printbill
 
-from rest_framework.decorators import api_view
-from rest_framework.response import Response
-from .models import ERPatient
-from .serializers import PatientSerializer
-from datetime import datetime
 
 @api_view(['GET'])
 @permission_classes([HasRolePermission])

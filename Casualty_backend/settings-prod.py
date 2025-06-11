@@ -79,22 +79,19 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URL = os.getenv("MONGO_URL")
+MONGO_URL = os.getenv("GLOBAL_DB_HOST")
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 import os
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'Casuality',  
-        'ENFORCE_SCHEMA': False,
+        'NAME': os.getenv('MONGO_DB_NAME', 'Casuality'),  # Default to 'cosmetology' if not set
         'CLIENT': {
-            'host': os.getenv('MONGO_URL'),
-            'authMechanism': 'SCRAM-SHA-1',
+            'host': os.getenv('GLOBAL_DB_HOST'),
         }
     }
 }
-
 
 # DB_PASSWORD = os.getenv("DB_PASSWORD")
 
