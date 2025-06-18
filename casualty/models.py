@@ -74,18 +74,7 @@ class ERPatientRegister(AuditModel):
 
 
 
-# models.py
-from django.db import models
 
-class Employee(AuditModel):
-    empid = models.CharField(max_length=50, primary_key=True)
-    name = models.CharField(max_length=100)
-    role = models.CharField(max_length=50)
-    email = models.EmailField(unique=True)
-    password = models.CharField(max_length=128)  # Store hashed passwords in production
-
-    def __str__(self):
-        return self.name
 
 
     

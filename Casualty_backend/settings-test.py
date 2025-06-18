@@ -86,10 +86,9 @@ import os
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'Casuality',  
-        'ENFORCE_SCHEMA': False,
+        'NAME': os.getenv('MONGO_DB_NAME', 'Casuality'),  # Default to 'cosmetology' if not set
         'CLIENT': {
-            'host': os.getenv('MONGO_URL'),
+            'host': os.getenv('GLOBAL_DB_HOST'),
         }
     }
 }

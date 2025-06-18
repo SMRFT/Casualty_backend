@@ -75,27 +75,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Casualty_backend.wsgi.application'
 
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 
-MONGO_URL = os.getenv("GLOBAL_DB_HOST")
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 import os
+from dotenv import load_dotenv
+load_dotenv()  # Load environment variables from .env
+import certifi
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': 'Casuality',  
+        'NAME':"Casuality",
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': os.getenv('MONGO_URL')
+            'host': os.getenv('GLOBAL_DB_HOST'),
         }
     }
 }
 
-
-# DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -137,3 +135,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+CORS_ALLOW_HEADERS = [
+    "Authorization",
+    "Content-Type",
+]
