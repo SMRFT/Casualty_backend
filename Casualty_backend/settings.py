@@ -75,29 +75,25 @@ TEMPLATES = [
 WSGI_APPLICATION = 'Casualty_backend.wsgi.application'
 
 import os
-from dotenv import load_dotenv
 
-load_dotenv()
 
-MONGO_URL = os.getenv("GLOBAL_DB_HOST")
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 import os
-import os
-import certifi
 from dotenv import load_dotenv
 load_dotenv()  # Load environment variables from .env
+import certifi
 DATABASES = {
     'default': {
         'ENGINE': 'djongo',
-        'NAME': os.getenv('MONGO_DB_NAME', 'Casuality'),  # Default to 'cosmetology' if not set
+        'NAME':"Casuality",
+        'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': os.getenv('GLOBAL_DB_HOST'),
+            'host': "mongodb://admin:YSEgnm42789@103.205.141.245:27017/",
         }
     }
 }
 
-# DB_PASSWORD = os.getenv("DB_PASSWORD")
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -142,5 +138,4 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CORS_ALLOW_HEADERS = [
     "Authorization",
     "Content-Type",
-    "Branch-Code"
 ]
