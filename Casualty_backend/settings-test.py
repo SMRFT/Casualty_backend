@@ -79,7 +79,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URL = os.getenv("MONGO_URL")
+MONGO_URL = os.getenv("GLOBAL_DB_HOST")
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 import os
