@@ -89,8 +89,7 @@ DATABASES = {
         'NAME': 'Casuality',  
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': os.getenv('MONGO_URL'),
-            'authMechanism': 'SCRAM-SHA-1',
+            'host': os.getenv('MONGO_URL')
         }
     }
 }
