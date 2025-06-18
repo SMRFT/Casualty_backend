@@ -89,7 +89,7 @@ DATABASES = {
         'NAME':"Casuality",
         'ENFORCE_SCHEMA': False,
         'CLIENT': {
-            'host': "mongodb://admin:YSEgnm42789@103.205.141.245:27017/",
+            'host': os.getenv('GLOBAL_DB_HOST'),
         }
     }
 }
